@@ -7,7 +7,7 @@
 
 
 
-<title>Hello World | Hexo</title>
+<title>cs224n note1--Word Vectors I | Hexo</title>
 
 
 
@@ -169,36 +169,55 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Hello World</h1>
+            <h1 class="post-title">cs224n note1--Word Vectors I</h1>
             
                 <div class="post-meta">
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">August 31, 2019&nbsp;&nbsp;17:10:53</a>
+                        Date: <a href="#">September 12, 2019&nbsp;&nbsp;15:27:43</a>
                         </span>
                     
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/cs224-note/">cs224 note</a>
+                            
+                        </span>
                     
                 </div>
             
         </header>
 
         <div class="post-content">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h1 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h1><h2 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h2 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h2 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h2 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+            <h1 id="Word-Vectors"><a href="#Word-Vectors" class="headerlink" title="Word Vectors"></a>Word Vectors</h1><p>The most simple method: <strong>one-hot vector</strong><br>Problem: not give us directly any notion of similarity</p>
+<h2 id="SVD-Based-Methods"><a href="#SVD-Based-Methods" class="headerlink" title="SVD Based Methods"></a>SVD Based Methods</h2><p>Singular Value Decomposition on <strong>X</strong><br>Use the rows of U as the word embeddings for all words in our dictionary    </p>
+<h3 id="A-few-choice-for-X"><a href="#A-few-choice-for-X" class="headerlink" title="A few choice for X"></a><strong>A few choice for X</strong></h3><ul>
+<li>Word-Document Matrix<br>Loop over billions of documents and for each time word i appears in document j, we add one to entry <strong>X<sub>ij</sub></strong>.</li>
+<li>Window based Co-occurrence Matrix<br>We count the number of times each word appears inside a window of a particular size around the word of interest. We calculate this count for all the words in corpus.</li>
+<li>Applying SVD to the cooccurrence matrix   <ol>
+<li>The dimensions of the matrix <strong>change very often</strong> (new words are added very frequently and corpus changes in size)</li>
+<li>The matrix is extremely <strong>sparse</strong> since most words do not co-occur</li>
+<li>The matrix is very <strong>high dimensional</strong> in general (≈ 10<sup>6</sup> × 10<sup>6</sup>)</li>
+<li>Requires the incorporation of some hacks on <strong>X</strong> to account for the drastic imbalance in word frequency  </li>
+</ol>
+</li>
+</ul>
+<h2 id="Iteration-Based-Methods-Word2vec"><a href="#Iteration-Based-Methods-Word2vec" class="headerlink" title="Iteration Based Methods - Word2vec"></a>Iteration Based Methods - Word2vec</h2><ul>
+<li><strong>2 algorithms</strong>:<ul>
+<li><strong>continuous bag-of-words (CBOW)</strong><br>CBOW aims to predict a center word from the surrounding context in terms of word vectors.</li>
+<li><strong>skip-gram</strong><br>Skip-gram does the opposite, and predicts the<br>distribution (probability) of context words from a center word.</li>
+</ul>
+</li>
+<li><strong>2 training methods</strong>: <ul>
+<li><strong>negative sampling</strong><br>Negative sampling defines an objective by <strong>sampling negative examples</strong>.</li>
+<li><strong>hierarchical softmax</strong><br>Hierarchical softmax defines an objective using an <strong>efficient tree structure</strong> to compute probabilities for all the vocabulary.  </li>
+</ul>
+</li>
+</ul>
+<h3 id="Language-Models"><a href="#Language-Models" class="headerlink" title="Language Models"></a>Language Models</h3>
         </div>
 
         
@@ -207,6 +226,14 @@
                 <span>Tag(s):</span>
                 <span class="tag">
                     
+                    
+                        <a href="/tags/nlp/"># nlp</a>
+                    
+                        <a href="/tags/cs224/"># cs224</a>
+                    
+                        <a href="/tags/word-vectors/"># word vectors</a>
+                    
+                        
                 </span>
             </div>
             <div>
@@ -217,8 +244,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2019/08/31/blog新体验/">blog新体验</a>
             
+            <a class="next" rel="next" href="/2019/08/31/blog新体验/">blog新体验</a>
             
         </section>
 
