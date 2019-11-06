@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>Language model | Hexo</title>
+
+
+
+    <link rel="icon" href="/a.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Shirley&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Shirley&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Language model</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 1, 2019&nbsp;&nbsp;10:18:35</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Michael-Collins-nlp-notes/">Michael Collins'nlp notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>First, we will define <em>V</em> to be the set of all words in the language.<br>A sentence in the language is a sequence of words $x_1x_2…x_n$, and we assume that $x_n$ is a special symbol - STOP.<br>A function $p(x_1,x_2,…,x_n)$  </p>
+<h2 id="Why-language-model"><a href="#Why-language-model" class="headerlink" title="Why language model?"></a>Why language model?</h2><ul>
+<li>very useful in a broad range of applications, like speech recognition and machine translation</li>
+<li>be useful in several other contexts: for example in hidden Markov models, and in models for natural language parsing</li>
+</ul>
+<h2 id="Markov-Models"><a href="#Markov-Models" class="headerlink" title="Markov Models"></a>Markov Models</h2><ul>
+<li>$P(X_i = x_i|X_1 = x_1,…X_{i−1} = x_{i−1}) = P(X_i = x_i|X_{i−1} = x_{i−1})$<br>This is a (first-order) Markov assumption. We have assumed that the identity of the i’th word in the sequence depends only on the identity of the previous word, $x_{i−1}$.   More formally, we have assumed that the value of $X_i$ is conditionally independent of $X_1…X_{i−2}$, given the value for $X_{i−1}$.  </li>
+<li>$P(X_i = x_i|X_1 = x_1,…X_{i−1} = x_{i−1}) = P(X_i = x_i|X_{i−2} = x_{i−2}, X_{i−1} = x_{i−1})$<br>a second-order Markov process<br>the probability of an entire sequence is written as<br>$P(X_1 = x_1, X_2 = x_2,… X_n = x_n) = Π P(X_i = x_i|X_{i−2} = x_{i−2},X_{i−1} = x_{i−1})$<br>For convenience, we will assume that $x_0 = x_{−1} = *$ in this definition, where * is a special “start” symbol in the sentence.</li>
+</ul>
+<h2 id="Trigram-Language-Models"><a href="#Trigram-Language-Models" class="headerlink" title="Trigram Language Models"></a>Trigram Language Models</h2><p>$p(x_1…x_n) = Π q(x_i|x_{i−2}, x_{i−1})$<br>$q(w|u, v) = \dfrac{c(u, v, w)}{c(u, v)}$<br>Define $c(u, v, w)$ to be the number of times that the trigram $(u, v, w)$ is seen in the training corpus.<br>Unfortunately, this way of estimating parameters runs into a very serious issue. Recall that we have a very large number of parameters in our model (e.g., with a vocabulary size of 10, 000, we have around 10<sup>12</sup> parameters). Because of this, many of our counts will be zero.</p>
+<h3 id="Evaluating-Language-Models-Perplexity"><a href="#Evaluating-Language-Models-Perplexity" class="headerlink" title="Evaluating Language Models: Perplexity"></a>Evaluating Language Models: Perplexity</h3><p>A natural measure of the quality of the language model would be the probability it assigns to the entire set of test sentences.<br>$Π p(x(i))$<br><strong>the average log probability under the model</strong><br>$l = \frac{1}{M} \times log_2 Π p(x(i)) =\frac{1}{M} \times Σ log_2 p(x(i))$<br>Define M to be the total number of words in the test corpus. i is the i’th sentence.<br><strong>perplexity</strong><br>$2^{-l}$<br>The smaller the value of perplexity, the better the<br>language model is at modeling unseen data.<br>Under a uniform probability model, the perplexity is equal to the vocabulary size. Perplexity can be thought of as the effective vocabulary size under the model: if, for example, the perplexity of the model is 120 (even though the vocabulary size is say 10, 000), then this is roughly equivalent to having an effective vocabulary size of 120. </p>
+<h2 id="Smoothed-Estimation-of-Trigram-Models"><a href="#Smoothed-Estimation-of-Trigram-Models" class="headerlink" title="Smoothed Estimation of Trigram Models"></a>Smoothed Estimation of Trigram Models</h2><ul>
+<li><p>Linear Interpolation</p>
+<ul>
+<li><p>trigram<br>$q_{ML}(w|u, v) = \dfrac{c(u, v, w)}{c(u, v)}$</p>
+</li>
+<li><p>bigram<br>$q_{ML}(w|v) = \dfrac{c(v, w)}{c(v)}$</p>
+</li>
+<li><p>unigram<br>$q_{ML}(w) = \dfrac{c(w)}{c()}$<br>c(w) is the number of times word w is seen in the training corpus, and c() is the total number of words seen in the training corpus.   </p>
+</li>
+<li><p>to use all three estimates, by defining the trigram estimate as follows:</p>
+<p>$q(w|u,v)=\lambda_1\times q_{ML}(w|u,v)+\lambda_2\times q_{ML}(w|v)+\lambda_3\times q_{ML}(w)$</p>
+<p>$λ_1 ≥ 0; λ_2 ≥ 0; λ_3 ≥ 0$</p>
+<p>$λ_1 + λ_2 + λ_3 = 1$      </p>
+</li>
+</ul>
+</li>
+<li><p>Discounting Methods</p>
+<ul>
+<li>discounted counts<br>$c^∗(v, w) = c(v, w) − β$<br>β is a value between 0 and 1 (a typical value might be β = 0.5)<br>if we take counts from the training corpus, we will systematically over-estimate the probability of bigrams seen in the corpus (and under-estimate bigrams not seen in the corpus).   </li>
+<li>bigram<br>$q(w|v) = \dfrac{c^∗(v, w)}{c(v)}$</li>
+<li>missing probability mass<br>$α(v) = 1 − Σ_{w:c(v,w)&gt;0}$ $\dfrac{c^∗(v, w)}{c(v)}$   </li>
+<li>If $w ∈ A(v) = {w : c(v, w) &gt; 0}$<br>$q_D(w|v) = \dfrac{c^∗(v, w)}{c(v)}$</li>
+<li>If $w ∈ B(v) = {w : c(v, w) = 0}$<br>$q_D(w|v)=\dfrac{\alpha(v)\times q_{ML}(w)}{\sum_{w∈B(v)}q_{ML}(w)}$</li>
+</ul>
+</li>
+<li><p>Linear Interpolation with Bucketing</p>
+<ul>
+<li>define a function $Π$ that maps bigrams $(u, v)$ to values $Π(u, v) ∈ {1, 2…, K}$ where K is some integer specifying the number of buckets   </li>
+<li>introduce smoothing parameters $λ_1^{(k)}$, $λ_2^{(k)}$, $λ_3^{(k)}$ for all $k ∈ {1,…K}$. </li>
+</ul>
+</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/nlp/"># nlp</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/11/04/t-sne/">t-SNE</a>
+            
+            
+            <a class="next" rel="next" href="/2019/09/30/sas/">sas/jmp简介</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Shirley | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
