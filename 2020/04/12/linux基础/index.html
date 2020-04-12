@@ -7,7 +7,7 @@
 
 
 
-<title>LIME&amp;SHAP | Hexo</title>
+<title>linux基础 | Hexo</title>
 
 
 
@@ -169,21 +169,21 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">LIME&amp;SHAP</h1>
+            <h1 class="post-title">linux基础</h1>
             
                 <div class="post-meta">
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">March 26, 2020&nbsp;&nbsp;16:07:59</a>
+                        Date: <a href="#">April 12, 2020&nbsp;&nbsp;10:29:44</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/machine-learning/">machine learning</a>
+                                <a href="/categories/linux/">linux</a>
                             
                         </span>
                     
@@ -192,28 +192,105 @@
         </header>
 
         <div class="post-content">
-            <h2 id="RF"><a href="#RF" class="headerlink" title="RF"></a>RF</h2><ul>
-<li>bootstrap采样</li>
-<li>一般每棵树随机选根号n个特征</li>
-<li>不剪枝，并行训练各棵树</li>
-<li>OOB验证（每棵树有1/3的样本未使用，可作为验证集），每个样本有1/3的树进行投票</li>
-<li>Variable Importance：分别对OOB每个特征加随机误差，看每个特征对结果的影响大小，费时一些</li>
-<li>Gini Importance：统计每棵树M特征作为结点Gini指数下降的和，便训练可边统计，sklearn使用这个</li>
+            <h2 id="文件目录类等"><a href="#文件目录类等" class="headerlink" title="文件目录类等"></a>文件目录类等</h2><ul>
+<li>pwd：当前目录</li>
+<li>ls：当前目录下的文件<ul>
+<li>ls -al</li>
 </ul>
-<h2 id="Permutation-Importance"><a href="#Permutation-Importance" class="headerlink" title="Permutation Importance"></a>Permutation Importance</h2><p>分别对每一列特征数据打乱顺序，看对结果的影响来排序</p>
-<h2 id="LIME"><a href="#LIME" class="headerlink" title="LIME"></a>LIME</h2><p>局部可解释性</p>
+</li>
+<li>cd：切换目录<ul>
+<li>cd ~：回到用户home目录</li>
+</ul>
+</li>
+<li>mkdir：创建文件夹<ul>
+<li>mkdir -p：多级目录一次性创建</li>
+</ul>
+</li>
+<li>rmdiv：删掉空目录</li>
+<li>rm -rf：删非空目录</li>
+<li>touch：创建空文件</li>
+<li>cp：拷贝<ul>
+<li>cp 文件 目录：拷贝该文件到这个目录下</li>
+<li>cp -r 文件夹 目录：拷贝整个文件夹到这个目录下</li>
+<li>\cp：强制覆盖</li>
+</ul>
+</li>
+<li>mv<ul>
+<li>mv oldname newname：重命名</li>
+<li>mv 文件 目录：移动文件到目录下</li>
+</ul>
+</li>
+<li>cat：浏览文件<ul>
+<li>cat -n：显示行号</li>
+<li>cat|more：分页显示</li>
+</ul>
+</li>
+<li>less：类more，适合大文件</li>
+<li>head：默认显示文件开头前10行<ul>
+<li>head -n 5：显示前5行</li>
+</ul>
+</li>
+<li>tail：类head，显示文件后10行<ul>
+<li>tail -f 文件：实时监控文件的所有更新</li>
+</ul>
+</li>
+<li>&gt;：输出重定向，把输出的内容覆盖写入某文件</li>
+<li>&gt;&gt;：把输出的内容跟追加到某文件</li>
+<li>cal：当前日历信息</li>
+<li>ln：软链接（快捷方式）<ul>
+<li>ln -s 原文件 链接文件</li>
+<li>rm -rf 软链接：删除软链接 </li>
+</ul>
+</li>
+<li>echo：字符串输出<ul>
+<li>echo “字符串”：输出字符串</li>
+<li>echo $PAHT：输出环境变量</li>
+</ul>
+</li>
+<li>history：查看历史执行指令（含编号）</li>
+<li>！历史执行指令编号：执行该历史指令</li>
+</ul>
+<h2 id="用户和用户组管理"><a href="#用户和用户组管理" class="headerlink" title="用户和用户组管理"></a>用户和用户组管理</h2><ul>
+<li>useradd：添加新用户</li>
+<li>userdel：删除用户</li>
+<li>usermod：修改账号</li>
+<li>passwd：用户密码</li>
+<li>groupadd：添加用户组</li>
+<li>groupdel：删除用户组</li>
+<li>groupmod：修改用户组</li>
+</ul>
+<h2 id="vi-vim"><a href="#vi-vim" class="headerlink" title="vi/vim"></a>vi/vim</h2><p>文本编辑器</p>
 <ul>
-<li>原模型是黑盒，可用于任何模型</li>
-<li>将样本及其附近的点（原样本上加一点随机扰动）及原模型预测的结果作为新的数据集</li>
-<li>新数据集训练一个简单模型（回归or树）</li>
-<li>根据简单模型可局部结束各特征的重要性</li>
+<li>正常模式：刚进入的模式<ul>
+<li>i：进入输入模式</li>
+<li>：：进入命令行模式</li>
+<li>快捷键<ul>
+<li>gg：首行</li>
+<li>G：末行</li>
+<li>dd：删除</li>
+<li>/关键词：查找</li>
+<li>yy：复制当前行<ul>
+<li>5yy：复制当前及下面5行</li>
 </ul>
-<h2 id="SHAP"><a href="#SHAP" class="headerlink" title="SHAP"></a>SHAP</h2><ul>
-<li>可对每个样本进行解释</li>
-<li>原模型映射到简单模型，使预测值相等</li>
-<li>SHAP值是每个特征对最后预测值的贡献度，与base（类似截距）相加就是原模型预测值</li>
-<li>贡献度是特征i在各特征组合中有无i预测结果的差值的归一化结果</li>
-<li>个样本点特征的shap值组合起来就可以给特征重要性排序</li>
+</li>
+<li>p：粘贴</li>
+</ul>
+</li>
+<li>:set nu：显示行号</li>
+<li>:set nonu：不显示行号</li>
+</ul>
+</li>
+<li>输入模式<ul>
+<li>键盘esc：回到正常模式</li>
+</ul>
+</li>
+<li>命令行模式<ul>
+<li>:wq：保存并退出</li>
+<li>:q：退出</li>
+<li>:q!：强制退出</li>
+<li>键盘esc：回到正常模式</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -225,7 +302,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/Interpreting-Model/"># Interpreting Model</a>
+                        <a href="/tags/linux/"># linux</a>
                     
                         
                 </span>
@@ -238,10 +315,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/04/12/linux基础/">linux基础</a>
+                <a class="prev" rel="prev" href="/2020/04/12/数据结构与算法/">数据结构与算法</a>
             
             
-            <a class="next" rel="next" href="/2020/02/26/mysql-learning/">Mysql learning 1-sql基础语法</a>
+            <a class="next" rel="next" href="/2020/03/26/LIME-SHAP/">LIME&SHAP</a>
             
         </section>
 

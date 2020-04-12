@@ -7,7 +7,7 @@
 
 
 
-<title>LIME&amp;SHAP | Hexo</title>
+<title>gbdt和它的小伙伴们 | Hexo</title>
 
 
 
@@ -103,80 +103,18 @@
             <div class="container">
     
     
-        <div class="post-toc">
-    <div class="tocbot-list">
-    </div>
-    <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
-    </div>
-</div>
-
-<script>
-    document.ready(
-        function () {
-            tocbot.init({
-                tocSelector: '.tocbot-list',
-                contentSelector: '.post-content',
-                headingSelector: 'h1, h2, h3, h4, h5',
-                collapseDepth: 1,
-                orderedList: false,
-                scrollSmooth: true,
-            })
-        }
-    )
-
-    function expand_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 6,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "collapse_toc()");
-        b.innerHTML = "Collapse all"
-    }
-
-    function collapse_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 1,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "expand_toc()");
-        b.innerHTML = "Expand all"
-    }
-
-    function go_top() {
-        window.scrollTo(0, 0);
-    }
-
-    function go_bottom() {
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-</script>
-    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">LIME&amp;SHAP</h1>
+            <h1 class="post-title">gbdt和它的小伙伴们</h1>
             
                 <div class="post-meta">
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">March 26, 2020&nbsp;&nbsp;16:07:59</a>
+                        Date: <a href="#">April 12, 2020&nbsp;&nbsp;10:33:05</a>
                         </span>
                     
                     
@@ -192,30 +130,7 @@
         </header>
 
         <div class="post-content">
-            <h2 id="RF"><a href="#RF" class="headerlink" title="RF"></a>RF</h2><ul>
-<li>bootstrap采样</li>
-<li>一般每棵树随机选根号n个特征</li>
-<li>不剪枝，并行训练各棵树</li>
-<li>OOB验证（每棵树有1/3的样本未使用，可作为验证集），每个样本有1/3的树进行投票</li>
-<li>Variable Importance：分别对OOB每个特征加随机误差，看每个特征对结果的影响大小，费时一些</li>
-<li>Gini Importance：统计每棵树M特征作为结点Gini指数下降的和，便训练可边统计，sklearn使用这个</li>
-</ul>
-<h2 id="Permutation-Importance"><a href="#Permutation-Importance" class="headerlink" title="Permutation Importance"></a>Permutation Importance</h2><p>分别对每一列特征数据打乱顺序，看对结果的影响来排序</p>
-<h2 id="LIME"><a href="#LIME" class="headerlink" title="LIME"></a>LIME</h2><p>局部可解释性</p>
-<ul>
-<li>原模型是黑盒，可用于任何模型</li>
-<li>将样本及其附近的点（原样本上加一点随机扰动）及原模型预测的结果作为新的数据集</li>
-<li>新数据集训练一个简单模型（回归or树）</li>
-<li>根据简单模型可局部结束各特征的重要性</li>
-</ul>
-<h2 id="SHAP"><a href="#SHAP" class="headerlink" title="SHAP"></a>SHAP</h2><ul>
-<li>可对每个样本进行解释</li>
-<li>原模型映射到简单模型，使预测值相等</li>
-<li>SHAP值是每个特征对最后预测值的贡献度，与base（类似截距）相加就是原模型预测值</li>
-<li>贡献度是特征i在各特征组合中有无i预测结果的差值的归一化结果</li>
-<li>个样本点特征的shap值组合起来就可以给特征重要性排序</li>
-</ul>
-
+            
         </div>
 
         
@@ -225,7 +140,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/Interpreting-Model/"># Interpreting Model</a>
+                        <a href="/tags/boosting/"># boosting</a>
                     
                         
                 </span>
@@ -238,10 +153,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/04/12/linux基础/">linux基础</a>
             
-            
-            <a class="next" rel="next" href="/2020/02/26/mysql-learning/">Mysql learning 1-sql基础语法</a>
+            <a class="next" rel="next" href="/2020/04/12/数据结构与算法/">数据结构与算法</a>
             
         </section>
 
