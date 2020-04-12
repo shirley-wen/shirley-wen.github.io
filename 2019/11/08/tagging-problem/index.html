@@ -7,7 +7,7 @@
 
 
 
-<title>t-SNE | Hexo</title>
+<title>Tagging problem, and HMMs | Hexo</title>
 
 
 
@@ -207,21 +207,21 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">t-SNE</h1>
+            <h1 class="post-title">Tagging problem, and HMMs</h1>
             
                 <div class="post-meta">
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">November 4, 2019&nbsp;&nbsp;10:06:29</a>
+                        Date: <a href="#">November 8, 2019&nbsp;&nbsp;11:16:59</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/machine-learning/">machine learning</a>
+                                <a href="/categories/Michael-Collins-nlp-notes/">Michael Collins'nlp notes</a>
                             
                         </span>
                     
@@ -230,57 +230,20 @@
         </header>
 
         <div class="post-content">
-            <p>t-SNE(t-distributed stochastic neighbor embedding) </p>
+            <h2 id="Part-of-speech-POS-tagging"><a href="#Part-of-speech-POS-tagging" class="headerlink" title="Part-of-speech(POS) tagging"></a>Part-of-speech(POS) tagging</h2><p> The most basic problems in NLP<br> <strong>Input</strong>：a sentence (the dog saw a cat)<br> <strong>Output</strong>：a tag sequence (D N V D N – D for a determiner, N for noun, and V for verb)   </p>
+<p><strong>Challenges</strong>：</p>
 <ul>
-<li>t-分布领域嵌入算法</li>
-<li>一种非线性降维机器学习算法，非常适用于高维数据降维到2维或者3维，进行可视化    </li>
+<li>一词多义</li>
+<li>生僻词，训练集中不存在</li>
 </ul>
-<h2 id="SNE"><a href="#SNE" class="headerlink" title="SNE"></a>SNE</h2><blockquote>
-<p>在高维空间相似的数据点，映射到低维空间距离也是相似的。SNE把这种距离关系从欧几里得距离转换为一种条件概率来表示相似性。   </p>
-</blockquote>
-<blockquote>
-<p>考虑高维空间中的两个点$x_i$和$x_j$，以$x_i$为中心的高斯分布求$x_j$作为$x_i$邻近的点的条件概率$p_{x_j|x_i}$($p_{j|i}$)，$p_{j|i}$越大，代表$x_j$越靠近$x_i$，因此公式为：  </p>
-</blockquote>
-<p>$p_{j|i}=\dfrac{exp(-||x_i-x_j||^2/2\sigma_i^2)}{\sum_{k\neq i}exp(-||x_i-x_k||^2/2\sigma_i^2)}$<br>注：一维高斯分布概率密度函数：$f(x)=\dfrac{1}{\sqrt{2\pi}\sigma}exp(-\dfrac{(x-\mu)^2}{2\sigma^2})$<br>因只关心两点之间的相似度，设置$p_{i|i}=0$。<br>$\sigma_i$在每个点的值是不同的，在密集区，$\sigma_i$应该小一些，而在离散区，$\sigma_i$应该大一些。<br>$\sigma_i$值的设定使用了困惑度(perplexity)，通过二分类搜索的方式获得最佳的$\sigma_i$。困惑度随$\sigma_i$单调递增。（当$\sigma_i$趋向于无穷，$P_i$趋向于均匀分布，熵增大，困惑度增大。）<br>$Perp(P_i)=2^{H(P_i)}$<br>信息熵：$H(P_i)=-\displaystyle\sum_jp_{j|i}log_2p_{j|i}$<br>困惑度解释一个点附近有效的临近点个数（一种平滑处理），SNE对其有鲁棒性，一般设定在5~50之间，然后再搜索最佳的$\sigma_i$值。</p>
-<blockquote>
-<p>假设高维空间的点$x$映射到低维空间的点$y$，指定低维空间的高斯分布方差为$\frac{1}{\sqrt{2}}$，低维空间的条件概率$q_{j|i}$为：  </p>
-</blockquote>
-<p>$q_{j|i}=\dfrac{exp(-||y_i-y_j||^2)}{\sum_{k\neq i}exp(-||y_i-y_k||^2)}$<br>$q_{i|i}=0$</p>
-<blockquote>
-<p>当所有点的$q_{j|i}=p_{j|i}$，说明低维空间完全的体现了高维空间点之间的相似性，但这是不现实的，只有让两个空间的所有点概率分布尽量靠近来起到很好的降维效果。这里使用KL散度来度量。代价函数：   </p>
-</blockquote>
-<p>$C=\displaystyle\sum_iKL(P_i||Q_i)=\sum_i\sum_jp_{j|i}log\dfrac{p_{j|i}}{q_{j|i}}$     </p>
-<blockquote>
-<p>由于KL散度是一个非对称的度量，当$p_{j|i}$偏大$q_{j|i}$偏小时，给的惩罚比当$p_{j|i}$偏小$q_{j|i}$偏大时的惩罚大很多。因此SNE的代价函数更关注局部结构，而忽视了全局结构。使用梯度下降法优化目标，其代价函数对$y_i$求梯度为：   </p>
-</blockquote>
-<p>$\dfrac{\partial C}{\partial y_i}=2\displaystyle\sum_j(p_{j|i}-q_{j|i}+p_{i|j}-q_{i|j})(y_i-y_j)$</p>
-<blockquote>
-<p>为了加速优化，避免落在较差的局部最优，梯度中加入较大的动量。新的公式为：    </p>
-</blockquote>
-<p>$\gamma^{(t)}=\gamma^{(t-1)}+\eta\dfrac{\partial C}{\partial \gamma}+\alpha(t)(\gamma^{(t-1)}+\gamma^{(t-2)})$<br>$\gamma^{t}$代表第t轮迭代的解，$\eta$代表学习率，$\alpha(t)$代表第t轮迭代的动量  </p>
-<h2 id="t-SNE"><a href="#t-SNE" class="headerlink" title="t-SNE"></a>t-SNE</h2><p>SNE存在一些问题（代价函数难以优化，拥挤问题），需要优化，t-SNE向前迈进一步：</p>
+<h2 id="Named-entity-recognition"><a href="#Named-entity-recognition" class="headerlink" title="Named entity recognition"></a>Named entity recognition</h2><p> <strong>Input</strong>：a sentence (Profits soared at Boeing Co., easily topping forecasts on Wall Street, as their CEO Alan Mulally announced first quarter results.)<br> <strong>Output</strong>：the sentence with entity-boundaries marked (Profits/NA soared/NA at/NA Boeing/SC Co./CC ,/NA easily/NA topping/NA forecasts/NA on/NA Wall/SL Street/CL ,/NA as/NA their/NA CEO/NA Alan/SP Mulally/CP announced/NA first/NA quarter/NA results/NA ./NA<br>  KEY: NA = No entity<br>  SC = Start Company<br>  CC = Continue Company<br>  SL = Start Location<br>  CL = Continue Location)  </p>
+<h2 id="Generative-models"><a href="#Generative-models" class="headerlink" title="Generative models"></a>Generative models</h2><p>Our task is to learn a function that maps sentences to tag sequences from these training examples.   </p>
 <ul>
-<li>使用对称的SNE</li>
-<li>低维空间使用t分布代替高斯分布（重尾分布解决上面两个问题）</li>
+<li>define the function f(x) is through a conditional model<br>$f(x) =$ $arg$ $max$ $p(y|x)$</li>
+<li>the joint probability<br>$p(x, y) = p(y)p(x|y)$<br>$p(y)$ is a prior probability distribution over labels $y$<br>$p(x|y)$ is the probability of generating the input $x$, given that the underlying label is $y$<br>$f(x) =$ $arg$ $max$ $p(x|y)p(y)$<h3 id="Trigram-Hidden-Markov-Models-Trigram-HMMs"><a href="#Trigram-Hidden-Markov-Models-Trigram-HMMs" class="headerlink" title="Trigram Hidden Markov Models (Trigram HMMs)"></a>Trigram Hidden Markov Models (Trigram HMMs)</h3>$p(x_1,x_2,…x_n,y_1,y_2,…y_n)=\displaystyle\prod^{n+1}<em>{i=1}q(y_i|y</em>{i-2},y_{i-1})\displaystyle\prod^n_{i=1}e(x_i|y_i)$<br>($y_0=y_{-1}=*, y_{n+1}=STOP$)<br>$q(s|u, v)=\dfrac{c(s,u,v)}{c(u,v)}$  </li>
 </ul>
-<h3 id="对称SNE"><a href="#对称SNE" class="headerlink" title="对称SNE"></a>对称SNE</h3><blockquote>
-<p>从条件概率转化为联合概率，代价函数为：</p>
-</blockquote>
-<p>$C=\displaystyle\sum KL(P||Q)=\sum_i\sum_jp_{ij}log\dfrac{p_{ij}}{q_{ij}}$<br>$p_{ii}=q_{ii}=0,p_{ij}=p_{ji},q_{ij}=q_{ji}$<br>$q_{ij}=\dfrac{exp(-||y_i-y_j||^2)}{\sum_{k\neq l}exp(-||y_l-y_k||^2)}$<br>$p_{ij}=\dfrac{exp(-||x_i-x_j||^2/2\sigma^2)}{\sum_{k\neq l}exp(-||x_l-x_k||^2/2\sigma^2)}$<br>但这样的公式有一个问题，当$x_i$是一个离群点时，$p_{ij}$的值对所有的$x_j$来说都是极小的。因此在低维空间点$y_i$对代价函数的惩罚作用很小。为了解决这一问题，将$p_{ij}$的定义修改为：<br>$p_{ij}=\dfrac{p_{i|j}+p_{j|i}}{2n}$<br>这保证了对于每个点$x_i$，$\sum_jp_{ij}&gt;\frac{1}{2n}$   </p>
-<blockquote>
-<p>对称SNE使梯度更加简单，计算速度更快。新的梯度为：</p>
-</blockquote>
-<p>$\dfrac{\partial C}{\partial y_i}=4\displaystyle\sum_j(p_{ij}-q_{ij})(y_i-y_j)$<br>论文作者实验发现，映射效果不比原来的差，某些时候会更好一些。</p>
-<h3 id="拥挤问题"><a href="#拥挤问题" class="headerlink" title="拥挤问题"></a>拥挤问题</h3><p>高维数据点降到十维可能有很好的区分（如手写数字数据集），但降到二维，可能效果会很差。原因如下：</p>
-<ul>
-<li>在十维空间，有十一个点等距，但这十一个点很难在二维空间表示（二维最多三个点等距）</li>
-<li>两个空间中两点之间的距离差异很远。在m维空间中，以i为中心，r为半径的球体的体积以$r^m$增长。当数据点在十维空间围绕i均匀分布，我们将其他点到i点的距离在二维空间表示会出现拥挤问题（由于更多的点距离较远，随着维数增加，更多的点倾向分布于在球体表面，导致对于那些距离较远的点在二维空间的表示面积相对于距离近的点的表示面积不够大，距离远的点会拥挤在一起）<blockquote>
-<p>解决方法：将低维空间的高斯分布改为重尾分布（自由度为1的t分布，柯西分布）。在低维空间的联合分布为：</p>
-</blockquote>
-</li>
-</ul>
-<p>$q_{ij}=\dfrac{(1+||y_i-y_j||^2)^{-1}}{\sum_{k\neq l}(1+||y_k-y_l||^2)^{-1})}$<br>注：标准柯西分布概率密度：$f(x;0,1)=\dfrac{1}{\pi(1+x^2)}$<br>由于没有指数，梯度计算会更加简单，速度会比SNE更快。<br>新的梯度为：<br>$\dfrac{\partial C}{\partial y_i}=4\displaystyle\sum_j(p_{ij}-q_{ij})(y_i-y_j)(1+||y_i-y_j||^2)^{-1}$</p>
-
+<p><strong>Smooth the estimates</strong><br>$q(s|u,v)=\lambda_1\times q_{ML}(s|u,v)+\lambda_2\times q_{ML}(s|v)+\lambda_3\times q_{ML}(s)$<br>$λ_1 ≥ 0; λ_2 ≥ 0; λ_3 ≥ 0$<br>$λ_1 + λ_2 + λ_3 = 1$<br>$e(x|s)=\dfrac{c(s\rightarrow x)}{c(s)}$<br><strong>If the word x is infrequent</strong></p>
+<h3 id="Decoding-with-HMMs-the-Viterbi-Algorithm"><a href="#Decoding-with-HMMs-the-Viterbi-Algorithm" class="headerlink" title="Decoding with HMMs: the Viterbi Algorithm"></a>Decoding with HMMs: the Viterbi Algorithm</h3>
         </div>
 
         
@@ -290,11 +253,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/降维/"># 降维</a>
-                    
-                        <a href="/tags/数据可视化/"># 数据可视化</a>
-                    
-                        <a href="/tags/paper/"># paper</a>
+                        <a href="/tags/nlp/"># nlp</a>
                     
                         
                 </span>
@@ -307,10 +266,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2019/11/08/tagging-problem/">Tagging problem, and HMMs</a>
+                <a class="prev" rel="prev" href="/2020/02/26/mysql-learning/">Mysql learning 1</a>
             
             
-            <a class="next" rel="next" href="/2019/11/01/language-model/">Language model</a>
+            <a class="next" rel="next" href="/2019/11/04/t-sne/">t-SNE</a>
             
         </section>
 
